@@ -82,6 +82,9 @@ async def delete_items(message: types.Message):
             await bot.send_photo(message.from_user.id, ret[0], f'{ret[1]}\nОписание: {ret[2]}\nЦена: {ret[-1]}')
             await bot.send_message(message.from_user.id, text='^^^', reply_markup=InlineKeyboardMarkup().add(InlineKeyboardButton(f'Удалить {ret[1]}',callback_data=f'del {ret[1]}')))
 
+
+@dp.message_handler(state="*", commands='Отмена')
+@dp.message_handler(Text(equals='Отмена', ignore_case=True), state="*")
 async def cancel_handler(message:types.Message,state: FSMContext):
     if message.from_user.id == ID:
      current_state = await  state.get_state()
@@ -99,7 +102,5 @@ def register_handlers_admin(dp: Dispatcher):
     dp.register_message_handler(load_name, state=FSMadmin.name)
     dp.register_message_handler(load_description,state=FSMadmin.description)
     dp.register_message_handler(load_price,state=FSMadmin.price)
-    dp.register_message_handler(cancel_handler, state="*", commands='Отмена')
-    dp.register_message_handler(cancel_handler, Text(equals='Отмена', ignore_case=True), state="*")
     dp.register_message_handler(make_changes_command, commands=['moderator'], is_chat_admin=True)
     dp.register_message_handler(delete_items,commands='Удалить')
